@@ -32,6 +32,11 @@ IKernel kernel = Kernel.Builder
             //.WithQdrantMemoryStore(Env.Var("QDRANT_ENDPOINT"), 1536) // This method offers an alternative approach to registering Qdrant memory store.
             .Build();
 
+// const string memoryCollectionName2 = "Dog";
+
+// var myDog = await kernel.Memory.SaveInformationAsync(memoryCollectionName2, id: "Dog_details",
+//     text: "I have a dog named Cosmo.  He loves to play fetch.");
+
 const string memoryCollectionName = "Facts About Me";
 
 var myBio = await kernel.Memory.SaveInformationAsync(memoryCollectionName, id: "LinkedIn Bio",
@@ -66,7 +71,9 @@ var memory1 = await memoryStore.GetWithPointIdAsync(memoryCollectionName, myOldF
 Console.WriteLine(memory1 != null ? memory1.Metadata.Text : "ERROR: memory not found");
 
 Console.WriteLine("== Similarity Searching Memories: My favorite work is ==");
+//var searchResults = kernel.Memory.SearchAsync(memoryCollectionName, "My work information", limit: 3, minRelevanceScore: 0.8, withEmbeddings: true);
 var searchResults = kernel.Memory.SearchAsync(memoryCollectionName, "My work information", limit: 3, minRelevanceScore: 0.8);
+
 
 var relatedMemory = "I know nothing.";
 var counter = 0;
@@ -74,7 +81,8 @@ var counter = 0;
 await foreach (var item in searchResults)
 {
     if (counter == 0) { relatedMemory = item.Metadata.Text; }
-    Console.WriteLine(item.Metadata.Text + " : " + item.Relevance);        
+    Console.WriteLine(item.Metadata.Text + " : " + item.Relevance);  
+         
 }
 
 var myFunction = kernel.CreateSemanticFunction(@"
